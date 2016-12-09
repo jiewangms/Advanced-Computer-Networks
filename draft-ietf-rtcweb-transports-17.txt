@@ -16,12 +16,13 @@ Abstract
    This document describes the data transport protocols used by WebRTC,
    including the protocols used for interaction with intermediate boxes
    such as firewalls, relays and NAT boxes.
-
+   这篇文档描述WebRTC使用的数据传输协议，并包含了用于和中间层交互的协议，例如
+   防火墙，转播，以及NAT等。
 Status of This Memo
 
    This Internet-Draft is submitted in full conformance with the
    provisions of BCP 78 and BCP 79.
-
+   
    Internet-Drafts are working documents of the Internet Engineering
    Task Force (IETF).  Note that other groups may also distribute
    working documents as Internet-Drafts.  The list of current Internet-
@@ -98,15 +99,17 @@ Table of Contents
    Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  20
 
 1.  Introduction
-
+1.  简介
    WebRTC is a protocol suite aimed at real time multimedia exchange
    between browsers, and between browsers and other entities.
-
+   WebRTC是一个针对浏览器之间，以及浏览器与其他实体之间的实时多媒体交换的
+   协议组。
    WebRTC is described in the WebRTC overview document,
    [I-D.ietf-rtcweb-overview], which also defines terminology used in
    this document, including the terms "WebRTC endpoint" and "WebRTC
    browser".
-
+   在文档I-D.ietf-rtcweb-overview中详细介绍了WebRTC，并且也定义了在本文档
+   中使用的术语，包括“WebRTC 端点”和“WebRTC 浏览器”等。
 
 
 Alvestrand               Expires April 29, 2017                 [Page 2]
@@ -115,42 +118,50 @@ Internet-Draft              WebRTC Transports               October 2016
 
 
    Terminology for RTP sources is taken from[RFC7656] .
-
+   术语RTP来自于[RFC7656]。
    This document focuses on the data transport protocols that are used
    by conforming implementations, including the protocols used for
    interaction with intermediate boxes such as firewalls, relays and NAT
    boxes.
-
+   本文档主要侧重于数据传输层协议的合格实现，包含用于和中间层交互的协议，例如
+   防火墙，转播，以及NAT等。
    This protocol suite intends to satisfy the security considerations
    described in the WebRTC security documents,
    [I-D.ietf-rtcweb-security] and [I-D.ietf-rtcweb-security-arch].
-
+   这个协议组也计划满足WebRTC安全文档[I-D.ietf-rtcweb-security]和
+   [I-D.ietf-rtcweb-security-arch]中描述的安全事项。
+   
    This document describes requirements that apply to all WebRTC
    endpoints.  When there are requirements that apply only to WebRTC
    browsers, this is called out explicitly.
+   本文档描述了的要求适用于所有的WebRTC端点。我们将显式地指出只用于WebRTC
+   浏览器的要求。
 
 2.  Requirements language
-
+2.  语言要求
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
    document are to be interpreted as described in RFC 2119 [RFC2119].
+   在本文中的关键词"MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", 和 "OPTIONAL"在RFC 2119中
+   有解释。
 
 3.  Transport and Middlebox specification
-
+3.  传输和中间层规范
 3.1.  System-provided interfaces
-
+3.1.  系统提供的接口
    The protocol specifications used here assume that the following
    protocols are available to the implementations of the WebRTC
    protocols:
-
+   这里使用的协议规范假设下面的协议对实现WebRTC协议是可用的：
    o  UDP [RFC0768].  This is the protocol assumed by most protocol
       elements described.
-
+   o  UDP [RFC0768]. 这是大多数协议所假定的协议元素。
    o  TCP [RFC0793].  This is used for HTTP/WebSockets, as well as for
       TURN/TLS and ICE-TCP.
-
+   o  TCP [RFC0793]. 在HTTP/WebSockets，TURN/TLS和ICE-TCP中被使用。
    For both protocols, IPv4 and IPv6 support is assumed.
-
+   对于上面的两个协议，都假定支持IPv4和IPv6。
    For UDP, this specification assumes the ability to set the DSCP code
    point of the sockets opened on a per-packet basis, in order to
    achieve the prioritizations described in [I-D.ietf-tsvwg-rtcweb-qos]
@@ -158,10 +169,10 @@ Internet-Draft              WebRTC Transports               October 2016
    not assume that the DSCP codepoints will be honored, and does assume
    that they may be zeroed or changed, since this is a local
    configuration issue.
-
+   对于UDP，本规范假设能够设置
    Platforms that do not give access to these interfaces will not be
    able to support a conforming WebRTC endpoint.
-
+   不能提供这些接口的平台将不能支持一个合格的WebRTC端点。
 
 
 
@@ -172,30 +183,31 @@ Internet-Draft              WebRTC Transports               October 2016
 
    This specification does not assume that the implementation will have
    access to ICMP or raw IP.
-
+   这个规范并不假设WebRTC实现将会访问ICMP或者原始的IP。
    The following protocols may be used, but can be implemented by a
    WebRTC endpoint, and are therefore not defined as "system-provided
    interfaces":
-
+   下面的协议可能被使用，但是亦可在一个WebRTC端点实现，因此没有被定义为
+   系统提供的接口：
    o  TURN - Traversal Using Relays Around NAT, [RFC5766]
-
+   o  TURN - 中继NAT实现的穿透协议[RFC5766]
    o  STUN - Session Traversal Utilities for NAT, [RFC5389]
-
+   o  STUN - NAT会话穿透协议[RFC5389]
    o  ICE - Interactive Connectivity Establishment,
       [I-D.ietf-ice-rfc5245bis]
-
+   o  ICE - 交互连接建立协议[I-D.ietf-ice-rfc5245bis]
    o  TLS - Transport Layer Security, [RFC5246]
-
+   o  TLS - 传输层安全协议[RFC5246]
    o  DTLS - Datagram Transport Layer Security, [RFC6347].
-
+   o  DTLS - 数据报传输层安全协议[RFC6347]
 3.2.  Ability to use IPv4 and IPv6
-
+3.2.  IPv4和IPv6使用能力
    Web applications running in a WebRTC browser MUST be able to utilize
    both IPv4 and IPv6 where available - that is, when two peers have
    only IPv4 connectivity to each other, or they have only IPv6
    connectivity to each other, applications running in the WebRTC
    browser MUST be able to communicate.
-
+   
    When TURN is used, and the TURN server has IPv4 or IPv6 connectivity
    to the peer or the peer's TURN server, candidates of the appropriate
    types MUST be supported.  The "Happy Eyeballs" specification for ICE
